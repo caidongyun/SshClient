@@ -8,7 +8,10 @@
 #include <Client.h>
 
 #include <Config/Configuration.h>
+#include <Config/EvipConf.h>
 #include <ssh/Connection.h>
+
+#include <Util/Log.h>
 
 namespace ssh_cli {
 
@@ -31,13 +34,18 @@ Client::execute( int argc, const char*argv[]){
 
         if ( conn.connect()){
 
-            std::string result = conn.execute( config.getCmd());
+            std::string result = conn.execute( EvipConf::LBE_CMD);
 
             if ( !result.empty()){
                 rc = 0;
                 std::cout << result;
-            }
+                EvipConf evipConf;
 
+                evipConf.parseLBE( result);
+                for ( auto &lbe: evipConf.getLbeList()){
+                    INFO( "Evip LBE:%s", lbe.c_str());
+                }
+            }
         }
     }
 

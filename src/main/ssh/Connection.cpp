@@ -42,11 +42,11 @@ Connection::verify_knownhost()
   switch (state)
   {
     case SSH_SERVER_KNOWN_OK:
-      fprintf( stdout, "Host key:\n");
+      INFO( "Host key:");
       ssh_print_hexa("Public key hash", hash, hlen);
       break; /* ok */
     case SSH_SERVER_KNOWN_CHANGED:
-      ERROR( "Host key for server changed: it is now:\n");
+      INFO( "Host key for server changed: it is now:\n");
       ssh_print_hexa("Public key hash", hash, hlen);
       break;
     case SSH_SERVER_FOUND_OTHER:
@@ -57,24 +57,27 @@ Connection::verify_knownhost()
       free(hash);
       return -1;
     case SSH_SERVER_FILE_NOT_FOUND:
-      ERROR( "Could not find known host file.\n");
-      ERROR( "If you accept the host key here, the file will be"
+      INFO( "Could not find known host file.\n");
+      INFO( "If you accept the host key here, the file will be"
        "automatically created.\n");
       /* fallback to SSH_SERVER_NOT_KNOWN behavior */
     case SSH_SERVER_NOT_KNOWN:
       hexa = ssh_get_hexa(hash, hlen);
-      ERROR("The server is unknown. Do you trust the host key?\n");
-      ERROR( "Public key hash: %s\n", hexa);
+      INFO("The server is unknown. Do you trust the host key?\n");
+      INFO( "Public key hash: %s\n", hexa);
       free(hexa);
-      if (fgets(buf, sizeof(buf), stdin) == NULL)
-      {
-        free(hash);
-        return -1;
-      }
-      if (strncasecmp(buf, "yes", 3) != 0)
-      {
-        free(hash);
-        return -1;
+
+      if ( !conf.isTrustAll()) {
+          if (fgets(buf, sizeof(buf), stdin) == NULL)
+          {
+              free(hash);
+              return -1;
+          }
+          if (strncasecmp(buf, "yes", 3) != 0)
+          {
+              free(hash);
+              return -1;
+          }
       }
       if (ssh_write_knownhost(session) < 0)
       {

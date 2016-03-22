@@ -20,6 +20,8 @@ namespace ssh_cli {
 const std::string Configuration::PWD_SUPPORT = "pwd_auth";
 const std::string Configuration::KB_SUPPORT = "kb_auth";
 const std::string Configuration::PWD = "password";
+const std::string Configuration::TRUST_ALL = "trust";
+
 const std::string Configuration::HOST_STR = "host";
 const std::string Configuration::PORT_STR = "port";
 const std::string Configuration::USR_STR = "user";
@@ -30,7 +32,8 @@ Configuration::Configuration(int argc, const char *argv[]):
     argc( argc),
     argv( argv),
     pwd_support( false),
-    kb_support( false){
+    kb_support( false),
+    trust_all( false){
 
 
 }
@@ -61,6 +64,7 @@ Configuration::parse_specific_option(){
     desc.add_options()
                              (PWD_SUPPORT.c_str(), po::value<bool>( ))
                              (KB_SUPPORT.c_str(), po::value<bool>( ))
+                             (TRUST_ALL.c_str(), po::value<bool>( ))
                              (PWD.c_str(), po::value<std::string>( ))
                              (HOST_STR.c_str(), po::value<std::string>( ))
                              (PORT_STR.c_str(), po::value<std::string>( ))
@@ -74,6 +78,7 @@ Configuration::parse_specific_option(){
 
     parseOption<bool>( PWD_SUPPORT, pwd_support, vm);
     parseOption<bool>( KB_SUPPORT, kb_support, vm);
+    parseOption<bool>( TRUST_ALL, trust_all, vm);
     parseOption<std::string>( PWD, password, vm);
     parseOption<std::string>( HOST_STR, host, vm);
     parseOption<std::string>( PORT_STR, port, vm);

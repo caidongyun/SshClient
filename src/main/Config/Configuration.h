@@ -34,13 +34,14 @@ class Configuration {
     bool parse_specific_option();
 
 
-    bool pwd_support, kb_support;
+    bool pwd_support, kb_support, trust_all;
     std::string password, host, port, user, cmd;
 
     /** Variables name **/
     static const std::string PWD_SUPPORT;
     static const std::string KB_SUPPORT;
     static const std::string PWD;
+    static const std::string TRUST_ALL;
 
     static const std::string HOST_STR;
     static const std::string PORT_STR;
@@ -97,6 +98,10 @@ public:
 
     const std::string& getUser() const {
         return user;
+    }
+
+    bool isTrustAll() const {
+        return trust_all;
     }
 };
 
